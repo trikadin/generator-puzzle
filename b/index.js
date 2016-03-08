@@ -1,3 +1,5 @@
+'use strict';
+
 require('sugar');
 
 const
@@ -10,7 +12,7 @@ function validateBlockName(name) {
 
 module.exports = yeoman.Base.extend({
 	constructor: function () {
-		yeoman.Base.apply(this, arguments);
+		yeoman.Base.call(this, ...arguments);
 
 		this.argument('blockName', {
 			type: String,
@@ -32,11 +34,7 @@ module.exports = yeoman.Base.extend({
 		},
 
 		loadBlocksList() {
-			this.blocksList =
-				fs
-					.readdirSync(this.destinationPath())
-					.filter(validateBlockName)
-					.sort();
+			this.blocksList = fs.readdirSync(this.destinationPath()).filter(validateBlockName).sort();
 		},
 
 		validateName() {
@@ -47,6 +45,7 @@ module.exports = yeoman.Base.extend({
 			if (!validateBlockName(this.blockName)) {
 				this.log(`Invalid block name "${this.blockName}" (should match pattern "^[gibp]-[a-z0-9-]*$")`);
 				this.blockName = false;
+
 			} else if (this.blocksList.indexOf(this.blockName) !== -1) {
 				this.log(`Block ${this.blockName} is already exists`);
 				this.blockName = false;
@@ -54,7 +53,9 @@ module.exports = yeoman.Base.extend({
 		},
 
 		validateParent() {
-			const parent = this.options.parent;
+			const
+				parent = this.options.parent;
+
 			if (parent && (this.blocksList.indexOf(parent) === -1)) {
 				this.log(`Parent block ${parent} is not exists`);
 				this.options.parent = false;
@@ -63,7 +64,8 @@ module.exports = yeoman.Base.extend({
 	},
 
 	prompting() {
-		const done = this.async();
+		const
+			done = this.async();
 
 		this.prompt([
 			{
@@ -71,6 +73,7 @@ module.exports = yeoman.Base.extend({
 				message: 'Enter the name of the created block',
 				validate: (val) =>
 					validateBlockName(val) ? true : `Invalid block name "${val}" (should match pattern "^[gibp]-[a-z0-9-]*$")`,
+
 				filter: (val) => val && val.trim(),
 				when: () => !this.blockName
 			},
@@ -81,7 +84,9 @@ module.exports = yeoman.Base.extend({
 				type: 'list',
 				choices: this.blocksList,
 				default: (answers) => {
-					const blockName = this.blockName || answers.blockName;
+					const
+						blockName = this.blockName || answers.blockName;
+
 					switch (blockName.charAt(0)) {
 						case 'p':
 							return this.blocksList.indexOf('i-page');
@@ -93,6 +98,7 @@ module.exports = yeoman.Base.extend({
 							return this.blocksList.indexOf('i-base');
 					}
 				},
+
 				filter: (val) => val && val.trim(),
 				when: () => !this.parent
 			},
@@ -103,6 +109,7 @@ module.exports = yeoman.Base.extend({
 				type: 'checkbox',
 				choices: this.blocksList.filter((val) => val.charAt(0) !== 'i')
 			}
+
 		], (answers) => {
 			Object.assign(this, answers);
 			done();
@@ -110,11 +117,18 @@ module.exports = yeoman.Base.extend({
 	},
 
 	writing() {
-		this.destinationRoot(this.blockName)
+		this.destinationRoot(this.blockName);
 		this.log(this.destinationPath());
+
 		this.fs.copyTpl(
 			this.templatePath('index.ejs'),
 			this.destinationPath('index.js'),
+			this
+		);
+
+		this.fs.copyTpl(
+			this.templatePath('class.ejs'),
+			this.destinationPath(`${this.blockName}.js`),
 			this
 		);
 
@@ -128,14 +142,14 @@ module.exports = yeoman.Base.extend({
 
 		this.fs.copyTpl(
 			this.templatePath('stylus.interface.ejs'),
-			this.destinationPath(this.blockName + '.interface.styl'),
+			this.destinationPath(`${this.blockName}.interface.styl`),
 			this
 		);
 
 		if (this.blockName.charAt(0) !== 'i') {
 			this.fs.copyTpl(
 				this.templatePath('stylus.ejs'),
-				this.destinationPath(this.blockName + '.styl'),
+				this.destinationPath(`${this.blockName}.styl`),
 				this
 			);
 		}
