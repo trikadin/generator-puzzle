@@ -1,4 +1,3 @@
 package('<%- blockName %>')
 	.extends('<%- parent %>')<% if (!dependencies || !dependencies.length) { %>;<% } else { %>
 	.dependencies('<%- dependencies.join("', '") %>');<% } %>
-

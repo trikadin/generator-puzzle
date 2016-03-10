@@ -1,5 +1,5 @@
-@import "../<%- parent %>/<%- parent %>.interface.styl"
-
+<% if (parent) { %>@import "../<%- parent %>/<%- parent %>.interface.styl"
+<% } %>
 $<%- blockName.camelize(false) %> = ()
 declare($<%- blockName.camelize(false) %>, <%- blockName %>)
 

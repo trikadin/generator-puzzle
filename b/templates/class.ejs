@@ -1,0 +1,9 @@
+'use strict';
+
+<% if (parent) { %>import <%- parent.camelize(false) %> from '../<%- parent %>/<%- parent %>';<% } %>
+import * as tpls from './<%- blockName %>.ss';
+import { block, model } from '../../core/block';
+
+@model({}, tpls)
+@block
+export default class <%- blockName.camelize(false) %><% if (parent) { %> extends <%- parent.camelize(false) %><% } %> {}
