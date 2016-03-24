@@ -6,7 +6,7 @@ const
 
 module.exports = {
 	_validateBlockName(name) {
-		return /^[gibp]-[a-z0-9-]*$/.test(name);
+		return /^[gibp]-[a-z0-9-]+$/.test(name);
 	},
 
 	initializing: {

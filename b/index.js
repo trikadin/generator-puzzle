@@ -95,7 +95,6 @@ module.exports = yeoman.Base.extend(Object.merge(Base, {
 					}
 				},
 
-				filter: (val) => val && val.trim(),
 				when: () => !this.parent
 			},
 
