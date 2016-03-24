@@ -4,13 +4,9 @@ require('sugar');
 
 const
 	yeoman = require('yeoman-generator'),
-	fs = require('fs');
+	Base = require('../base/Base');
 
-function validateBlockName(name) {
-	return /^[gibp]-[a-z0-9-]*$/.test(name);
-}
-
-module.exports = yeoman.Base.extend({
+module.exports = yeoman.Base.extend(Object.merge(Base, {
 	constructor: function () {
 		yeoman.Base.call(this, ...arguments);
 
@@ -29,20 +25,12 @@ module.exports = yeoman.Base.extend({
 	},
 
 	initializing: {
-		setPath() {
-			this.destinationRoot(this.config.get('paths').blocks);
-		},
-
-		loadBlocksList() {
-			this.blocksList = fs.readdirSync(this.destinationPath()).filter(validateBlockName).sort();
-		},
-
 		validateName() {
 			if (!this.blockName) {
 				return;
 			}
 
-			if (!validateBlockName(this.blockName)) {
+			if (!this._validateBlockName(this.blockName)) {
 				this.log(`Invalid block name "${this.blockName}" (should match pattern "^[gibp]-[a-z0-9-]*$")`);
 				this.blockName = false;
 
@@ -65,14 +53,19 @@ module.exports = yeoman.Base.extend({
 
 	prompting() {
 		const
-			done = this.async();
+			done = this.async(),
+			empty = {
+				name: '--none---',
+				value: null,
+				short: 'none'
+			};
 
 		this.prompt([
 			{
 				name: 'blockName',
 				message: 'Enter the name of the created block',
 				validate: (val) =>
-					validateBlockName(val) ? true : `Invalid block name "${val}" (should match pattern "^[gibp]-[a-z0-9-]*$")`,
+					this._validateBlockName(val) ? true : `Invalid block name "${val}" (should match pattern "^[gibp]-[a-z0-9-]*$")`,
 
 				filter: (val) => val && val.trim(),
 				when: () => !this.blockName
@@ -82,7 +75,7 @@ module.exports = yeoman.Base.extend({
 				name: 'parent',
 				message: 'Select the parent block',
 				type: 'list',
-				choices: this.blocksList,
+				choices: this.blocksList.concat([empty]),
 				default: (answers) => {
 					const
 						blockName = this.blockName || answers.blockName;
@@ -93,6 +86,9 @@ module.exports = yeoman.Base.extend({
 
 						case 'b':
 							return this.blocksList.indexOf('i-block');
+
+						case 'g':
+							return this.blocksList.length;
 
 						default:
 							return this.blocksList.indexOf('i-base');
@@ -116,10 +112,8 @@ module.exports = yeoman.Base.extend({
 		});
 	},
 
-	writing() {
-		this.destinationRoot(this.blockName);
-		this.log(this.destinationPath());
-
+	writing: {
+		writing() {
 		this.fs.copyTpl(
 			this.templatePath('index.ejs'),
 			this.destinationPath('index.js'),
@@ -153,6 +147,7 @@ module.exports = yeoman.Base.extend({
 				this
 			);
 		}
+	}
 
 	}
-});
+}, true));

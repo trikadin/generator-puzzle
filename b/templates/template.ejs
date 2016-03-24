@@ -1,5 +1,7 @@
 - namespace [%fileName%]
 
-<% if (parent) { %>- include '../<%- parent %>/<%- parent %>' as placeholder
-<% } %>
-- template index(params) extends ['<%- parent %>'].index
+<% if (parent) { -%>
+- include '../<%- parent %>/' as placeholder
+
+<% } -%>
+- template index(params)<% if (parent) { %> extends ['<%- parent %>'].index<% } %>
