@@ -63,7 +63,7 @@ module.exports = yeoman.Base.extend(Object.merge(Base, {
 		this.prompt([
 			{
 				name: 'blockName',
-				message: 'Enter the name of the created block',
+				message: 'Enter the name of the created block:',
 				validate: (val) =>
 					this._validateBlockName(val) ? true : `Invalid block name "${val}" (should match pattern "^[gibp]-[a-z0-9-]*$")`,
 
