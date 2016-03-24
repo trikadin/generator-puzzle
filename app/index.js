@@ -21,6 +21,13 @@ module.exports = yeoman.Base.extend({
 				default: paths.blocks || './src/blocks',
 				validate: (val) => Boolean(val && /^\.\//.test(val)) || 'Should begin with ./',
 				filter: (val) => val && val.trim()
+			},
+
+			{
+				name: 'disclaimer',
+				message: 'Enter the path to the disclaimer file (or leave this field empty if you don\'t use it)',
+				validate: (val) => !val || /^\.\//.test(val) || 'Should begin with ./',
+				filter: (val) => val ? val.trim() : null
 			}
 
 		], (answers) => {

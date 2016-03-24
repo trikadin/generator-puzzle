@@ -1,3 +1,7 @@
+<% if (disclaimer) { -%>
+<%- disclaimer -%>
+
+<% } -%>
 declare(
 	$<%- blockName.camelize(false) %>,
 	<%- blockName %>_<%- mod %>_<%- value %>

@@ -1,4 +1,8 @@
 - namespace [%fileName%]
+<% if (disclaimer) { -%>
+
+<%- disclaimer -%>
+<% } -%>
 
 <% if (parent) { -%>
 - include '../<%- parent %>/' as placeholder

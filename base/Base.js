@@ -1,7 +1,6 @@
 require('sugar');
 
 const
-	yeoman = require('yeoman-generator'),
 	fs = require('fs');
 
 module.exports = {
@@ -10,6 +9,20 @@ module.exports = {
 	},
 
 	initializing: {
+		loadDisclaimer() {
+			this.disclaimer = null;
+			const disclaimerPath = this.config.get('paths').disclaimer;
+
+			if (disclaimerPath) {
+				try {
+					this.disclaimer = fs.readFileSync(this.destinationPath(disclaimerPath));
+
+				} catch (err) {
+					this.log(`Failed to load disclaimer file ${this.destinationPath(disclaimerPath)}`);
+				}
+			}
+		},
+
 		setPath() {
 			this.destinationRoot(this.config.get('paths').blocks);
 		},
