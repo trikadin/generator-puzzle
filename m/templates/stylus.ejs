@@ -1,0 +1,13 @@
+declare(
+	$<%- blockName.camelize(false) %>,
+	<%- blockName %>_<%- mod %>_<%- value %>
+)
+
+<%- blockName %>_<%- mod %>_<%- value %>()
+	$p = assign({
+		theme: _<%- mod %>_<%- value %>
+	}, $p)
+
+	$theme = $p.theme
+
+	&{$theme}
