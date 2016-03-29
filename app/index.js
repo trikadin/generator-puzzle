@@ -1,8 +1,7 @@
 'use strict';
 
 const
-	yeoman = require('yeoman-generator'),
-	joi = require('joi');
+	yeoman = require('yeoman-generator');
 
 module.exports = yeoman.Base.extend({
 	constructor: function () {
